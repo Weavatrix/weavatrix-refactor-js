@@ -1,7 +1,7 @@
 ﻿import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {buildMoveSymbolDryRun} from '../../src/engines/move-symbol-dryrun.js'
-import {normalizeArchitectureContract} from 'weavatrix/analysis-kit'
+import {normalizeArchitectureContract} from 'weavatrix-js/analysis-kit'
 
 const fileNode = (path) => ({id: path, source_file: path, label: path})
 const symNode = (id, label) => ({id, source_file: id.slice(0, id.indexOf('#')), label})

@@ -2,11 +2,11 @@
 // the refactoring MCP — it registers every refactoring operation (rename, move, delete
 // readiness, change signature, bulk replace, organize imports, symbol edits) plus the apply
 // side (tools.mjs). The engines themselves are read-only plan producers in this package's
-// ./engines, composing the core's read-only weavatrix/analysis-kit surface; the core catalog
+// ./engines, composing the core's read-only weavatrix-js/analysis-kit surface; the core catalog
 // registers none of them. Rename owns its preview/confirm/apply workflow; other tools return
 // a weavatrix.edit-plan.v1 (or verdict/dry-run) for apply_edit_plan or direct review.
 
-import {toolResult} from 'weavatrix/extension/local-services'
+import {toolResult} from 'weavatrix-js/extension/local-services'
 import {buildBulkReplacePlan} from './engines/bulk-replace-plan.js'
 import {buildChangeSignaturePlan} from './engines/change-signature-plan.js'
 import {buildGraphRenamePlan} from './engines/graph-rename-plan.js'

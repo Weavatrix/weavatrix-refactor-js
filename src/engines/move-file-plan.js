@@ -8,7 +8,7 @@
 
 import {readFileSync} from 'node:fs'
 import {resolve} from 'node:path'
-import {verifyArchitecture} from 'weavatrix/analysis-kit'
+import {verifyArchitecture} from 'weavatrix-js/analysis-kit'
 import {isRelativeSpecifier, rewriteRelativeSpecifier, specifierDirOf} from './import-specifier.js'
 
 const IMPORT_RELATIONS = new Set(['imports', 're_exports'])

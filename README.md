@@ -3,7 +3,7 @@
 Evidence-backed, transactional refactoring for coding agents.
 
 `weavatrix-refactor` is the write-capable member of the Weavatrix family. It
-combines the complete read-only `weavatrix` code-intelligence MCP with 11
+combines the complete read-only `weavatrix-js` code-intelligence MCP with 11
 refactoring tools that can prove a change, preview it against the current
 working tree, apply it atomically, refresh the graph, and roll it back.
 
@@ -21,15 +21,15 @@ It is substantially more than a rename wrapper:
 
 ## Why this is a separate package
 
-The MIT `weavatrix` core is physically read-only: its published artifact has no
-repository source-write path. This Apache-2.0 package is the explicit write
+The MIT `weavatrix-js` core is physically read-only: its published artifact has no
+repository source-write path. This package is the explicit write
 boundary. Installing it and selecting its `refactor` profile makes the `edit`
 capability visible; without this package, the server cannot modify source.
 
 The split is a safety property, not packaging cosmetics:
 
 ```text
-weavatrix core          weavatrix-refactor                 repository
+weavatrix-js core       weavatrix-refactor                 repository
 read-only evidence  ->  plan + preview + confirmation  ->  atomic write
 graph / LSP / audit     hashes / provenance / rollback     refreshed graph
 ```
@@ -224,8 +224,8 @@ Useful inherited surfaces include:
 - target architecture: `get_architecture_contract`, `verify_architecture`, `explain_architecture_violation`;
 - repository control: `open_repo`, `rebuild_graph`, `graph_diff`, `list_known_repos`.
 
-See the [weavatrix README](https://github.com/sergii-ziborov/weavatrix) for the
-complete core catalog.
+See the [weavatrix-js README](https://github.com/sergii-ziborov/weavatrix-js)
+for the complete JavaScript host catalog.
 
 ## Install
 
@@ -253,14 +253,15 @@ rollback should be enabled.
 
 | Package | License | Responsibility |
 | --- | --- | --- |
-| `weavatrix` | MIT | Read-only graph, analysis, evidence, architecture, and verification |
-| `weavatrix-refactor` | Apache-2.0 | Proven refactor plans, transactional writes, and rollback |
-| `weavatrix-online` | Source-available/commercial terms | Explicit network connector and remote plan/evidence workflows |
+| `weavatrix-js` | MIT | Read-only JavaScript graph, analysis, evidence, architecture, and verification |
+| `weavatrix-refactor` | MIT | Proven refactor plans, transactional writes, and rollback |
+| `weavatrix-online` | MIT | Explicit public network connector and remote plan/evidence workflows |
 
-The refactor package extends core only through `weavatrix/extension-api` and
-`weavatrix/analysis-kit`; it does not copy or relicense the core.
+The refactor package extends the legacy JavaScript core only through
+`weavatrix-js/extension-api` and `weavatrix-js/analysis-kit`; it does not copy
+or relicense that core. The canonical `weavatrix` package is the native Rust
+engine and is not this JavaScript extension host.
 
 ## License
 
-Apache-2.0. The explicit patent grant and warranty/liability terms are a
-deliberate fit for a package whose purpose is writing code.
+MIT.

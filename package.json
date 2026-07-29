@@ -1,10 +1,10 @@
 {
   "name": "weavatrix-refactor",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "module",
-  "description": "The only Weavatrix component that writes code. Applies hash-verified edit plans computed and proven by the read-only weavatrix core: preview in core, confirm token, apply here, rollback always possible.",
+  "description": "The only Weavatrix component that writes code. Applies hash-verified edit plans computed and proven by the read-only weavatrix-js core: preview in core, confirm token, apply here, rollback always possible.",
   "author": "Sergii Ziborov <sergii.ziborov@gmail.com>",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "homepage": "https://weavatrix.com",
   "repository": {
     "type": "git",
@@ -55,6 +55,6 @@
   ],
   "dependencies": {
     "typescript": "5.9.3",
-    "weavatrix": "^0.3.14"
+    "weavatrix-js": "^0.3.15"
   }
 }

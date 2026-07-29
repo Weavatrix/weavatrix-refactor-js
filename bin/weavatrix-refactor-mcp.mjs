@@ -4,7 +4,7 @@
 //   weavatrix-refactor-mcp <repoRoot> [caps]
 //   weavatrix-refactor-mcp <graph.json> <repoRoot> [caps]
 // Defaults to the 'refactor' profile (all offline core caps + 'edit').
-const {startMcpServer} = await import('weavatrix/mcp-runtime')
+const {startMcpServer} = await import('weavatrix-js/mcp-runtime')
 const {refactorExtension} = await import('../src/extension.mjs')
 
 await startMcpServer({

@@ -8,9 +8,9 @@
 
 import {readFileSync} from 'node:fs'
 import {resolve} from 'node:path'
-import {isFrameworkEntryFile} from 'weavatrix/analysis-kit'
-import {hasDynamicCode, REFLECTION_CODE_RE} from 'weavatrix/analysis-kit'
-import {querySymbolPrecision} from 'weavatrix/analysis-kit'
+import {isFrameworkEntryFile} from 'weavatrix-js/analysis-kit'
+import {hasDynamicCode, REFLECTION_CODE_RE} from 'weavatrix-js/analysis-kit'
+import {querySymbolPrecision} from 'weavatrix-js/analysis-kit'
 
 const JS_TS_FILE_RE = /\.(?:[cm]?[jt]sx?)$/i
 // Edges that describe containment/shape rather than use; they never count as references.

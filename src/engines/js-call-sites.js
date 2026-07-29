@@ -5,7 +5,7 @@
 // UNCERTAIN rather than emit a wrong edit.
 
 import {extname} from 'node:path'
-import {Parser, Query, EXT_LANG, ensureParser} from 'weavatrix/analysis-kit'
+import {Parser, Query, EXT_LANG, ensureParser} from 'weavatrix-js/analysis-kit'
 
 const JS_TS_GRAMMARS = new Set(['javascript', 'typescript', 'tsx'])
 const FUNCTION_NODES = new Set(['function_declaration', 'function', 'generator_function_declaration', 'method_definition', 'arrow_function', 'function_expression'])

@@ -10,7 +10,7 @@
 import {readFileSync} from 'node:fs'
 import {createHash} from 'node:crypto'
 import {resolve, extname} from 'node:path'
-import {graphEndpointId, fileOfId} from 'weavatrix/analysis-kit'
+import {graphEndpointId, fileOfId} from 'weavatrix-js/analysis-kit'
 
 const sha256Hex = (data) => createHash('sha256').update(data).digest('hex')
 const GRAPH_RENAME_EXT = new Set(['.rs', '.py', '.go', '.java', '.cs', '.sol'])

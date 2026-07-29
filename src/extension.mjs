@@ -1,5 +1,5 @@
 import {createRequire} from 'node:module'
-import {defineWeavatrixExtension} from 'weavatrix/extension-api'
+import {defineWeavatrixExtension} from 'weavatrix-js/extension-api'
 import {refactorTools} from './tools.mjs'
 import {planTools} from './plan-tools.mjs'
 

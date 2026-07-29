@@ -4,7 +4,7 @@ import {mkdirSync, mkdtempSync, writeFileSync} from 'node:fs'
 import {tmpdir} from 'node:os'
 import {join} from 'node:path'
 import {buildMoveFilePlan, simulateFileMove} from '../../src/engines/move-file-plan.js'
-import {normalizeArchitectureContract} from 'weavatrix/analysis-kit'
+import {normalizeArchitectureContract} from 'weavatrix-js/analysis-kit'
 
 const fixtureRepo = (files) => {
     const repoRoot = mkdtempSync(join(tmpdir(), 'wvx-move-'))

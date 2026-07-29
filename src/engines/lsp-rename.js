@@ -5,7 +5,7 @@
 // (the core client refuses workspace/applyEdit); the rename plan producer turns this into a
 // reviewable edit plan.
 
-import {createTypeScriptLspClient} from 'weavatrix/analysis-kit'
+import {createTypeScriptLspClient} from 'weavatrix-js/analysis-kit'
 
 export async function lspRename(client, relPath, position, newName, timeoutMs) {
     const normalized = client.toUri(relPath)

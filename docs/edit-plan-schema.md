@@ -3,7 +3,7 @@
 Status: frozen and shipping (weavatrix-refactor 0.1.0; this doc is in the package
 `files`). `weavatrix.edit-plan.v1` is the contract between weavatrix-refactor's
 read-only plan-producer tools — which compute and prove plans against the core's
-read-only `weavatrix/analysis-kit` surface — and its apply tools, which consume
+read-only `weavatrix-js/analysis-kit` surface — and its apply tools, which consume
 and apply them. Changes require a `schemaVersion` bump and a compatible-pair
 release.
 

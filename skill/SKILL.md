@@ -5,9 +5,9 @@ description: "Apply hash-verified refactoring edit plans: a weavatrix-refactor p
 
 # weavatrix-refactor MCP
 
-The write-side layer of the Weavatrix stack. The MIT `weavatrix` core is safe by design: its
+The write-side layer of the Weavatrix stack. The MIT `weavatrix-js` core is safe by design: its
 published artifact contains no source-writing paths. This package's read-only plan producers
-*compute and prove* a refactoring against the core's `weavatrix/analysis-kit` surface, and its
+*compute and prove* a refactoring against the core's `weavatrix-js/analysis-kit` surface, and its
 apply tools are the only thing in the family that *writes* — applying **only** plans it computed,
 proved, and hashed, never inventing edits of its own.
 

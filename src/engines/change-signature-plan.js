@@ -10,7 +10,7 @@
 import {readFileSync} from 'node:fs'
 import {createHash} from 'node:crypto'
 import {resolve} from 'node:path'
-import {graphEndpointId, fileOfId} from 'weavatrix/analysis-kit'
+import {graphEndpointId, fileOfId} from 'weavatrix-js/analysis-kit'
 import {findCallSites, findParameterList, grammarForFile, parseJsTs} from './js-call-sites.js'
 
 const sha256Hex = (data) => createHash('sha256').update(data).digest('hex')

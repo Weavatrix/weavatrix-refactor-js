@@ -3,7 +3,7 @@
 // Shared write machinery for every Weavatrix refactor workflow. Every write sits behind
 // the environment gate plus a single-use, plan-bound confirm token.
 
-import {toolResult} from 'weavatrix/extension/local-services'
+import {toolResult} from 'weavatrix-js/extension/local-services'
 import {PlanValidationError} from './edit-plan.mjs'
 import {applyPlan, dryRunPlan} from './apply-session.mjs'
 import {rollbackLastApply} from './rollback.mjs'
