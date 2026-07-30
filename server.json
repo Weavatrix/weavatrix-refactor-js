@@ -1,15 +1,15 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.sergii-ziborov/weavatrix-refactor",
-  "description": "Transactional refactoring MCP for coding agents: 11 evidence-backed plan/apply tools, hash-bound previews, single-use confirmation, atomic writes, and rollback.",
+  "description": "Transactional refactoring MCP with 11 evidence-backed tools, hash-bound previews, and rollback.",
   "repository": {"url": "https://github.com/sergii-ziborov/weavatrix-refactor", "source": "github"},
-  "version": "0.1.4",
+  "version": "0.1.5",
   "websiteUrl": "https://weavatrix.com",
   "packages": [{
     "registryType": "npm",
     "registryBaseUrl": "https://registry.npmjs.org",
     "identifier": "weavatrix-refactor",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "runtimeHint": "npx",
     "transport": {"type": "stdio"},
     "packageArguments": [{
