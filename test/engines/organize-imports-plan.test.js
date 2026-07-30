@@ -52,7 +52,7 @@ test('a name used only in a TYPE position is not removed', async () => {
 test('an unused default/namespace import is UNCERTAIN, never removed (JSX-factory safety)', async () => {
     const repoRoot = fixtureRepo({'a.tsx': "import React from 'react'\nimport {dead} from './x'\nexport const v = 1\n"})
     const result = await buildOrganizeImportsPlan({repoRoot, file: 'a.tsx'})
-    // React (default) is NOT removed â€” reported uncertain; the unused named {dead} IS removed
+    // React (default) is NOT removed — reported uncertain; the unused named {dead} IS removed
     assert.ok(result.plan.uncertainReferences.some((ref) => ref.name === 'React' && ref.kind === 'default'))
     assert.equal(applyFile(repoRoot, result.plan.files[0]).includes("import React from 'react'"), true)
     assert.equal(applyFile(repoRoot, result.plan.files[0]).includes('dead'), false)

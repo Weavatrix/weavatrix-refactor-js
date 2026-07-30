@@ -1,10 +1,10 @@
 ﻿// Per-symbol deletion-readiness verdict: {safe, knownReferences, unknownDynamicUsages,
 // confidence, reason} plus the deletion line span as review evidence. Aggregates signals
-// the repository already computes â€” inbound graph edges, the exact LSP point query, and
-// the dead-code risk policy â€” into one honest verdict. safe:true is deliberately narrow:
+// the repository already computes — inbound graph edges, the exact LSP point query, and
+// the dead-code risk policy — into one honest verdict. safe:true is deliberately narrow:
 // it requires an exact full-universe zero-reference proof AND the absence of every risk
 // signal; anything weaker is "UNPROVEN", never a false clean. The decision stays
-// REVIEW_REQUIRED with autoDelete:false â€” this is evidence, not permission (README rule).
+// REVIEW_REQUIRED with autoDelete:false — this is evidence, not permission (README rule).
 
 import {readFileSync} from 'node:fs'
 import {resolve} from 'node:path'
@@ -49,7 +49,7 @@ function sameFileOccurrences(source, name, sourceRange) {
     const occurrences = []
     for (const match of source.matchAll(pattern)) {
         const line = source.slice(0, match.index).split('\n').length - 1
-        // occurrences inside the symbol's own body vanish with the deletion â€” not blockers
+        // occurrences inside the symbol's own body vanish with the deletion — not blockers
         if (Number.isInteger(startLine) && line >= startLine && line <= endLine) continue
         occurrences.push({kind: 'LEXICAL_SAME_FILE', line: line + 1, excerpt: (lines[line] || '').trim().slice(0, 120)})
     }

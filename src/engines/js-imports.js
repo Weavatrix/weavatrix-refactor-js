@@ -1,7 +1,7 @@
 ﻿// Import-statement structure for JS/TS, for organize_imports (unused-import removal). Built
 // on the same bundled tree-sitter grammars as js-call-sites.js. Safety rule the producer
 // relies on: an imported local binding is removable ONLY when its name occurs exactly once in
-// the whole file (the import itself) â€” so a used import (including type positions, JSX, and
+// the whole file (the import itself) — so a used import (including type positions, JSX, and
 // shorthand) can never be removed. Anything ambiguous is left for the caller to report.
 
 const IDENTIFIER_TYPES = new Set(['identifier', 'type_identifier', 'shorthand_property_identifier', 'property_identifier'])

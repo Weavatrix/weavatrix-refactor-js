@@ -1,7 +1,7 @@
 ﻿// organize_imports plan producer (JS/TS v1): removes provably-unused NAMED import
 // specifiers as a weavatrix.edit-plan.v1. Deliberately narrow for safety: a binding is
 // removed only when its name occurs exactly once in the file (the import itself), and only
-// named specifiers are removed â€” default/namespace imports can be implicitly used (a JSX
+// named specifiers are removed — default/namespace imports can be implicitly used (a JSX
 // factory like React, or a side-effect) and are reported UNCERTAIN instead of guessed.
 // Canonical ordering/grouping is left to the language formatter (gofmt/isort/eslint); this
 // tool does only the part the formatter cannot: knowing which imports are unused.

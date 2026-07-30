@@ -74,34 +74,27 @@ function uncoveredOccurrences(content, name, coveredRanges) {
 }
 
 // Computes the rename plan for one symbol. Returns a status object; status 'PLANNED' carries
-// the weavatrix.edit-plan.v1 envelope. Never throws for expected conditions â€” unsupported
+// the weavatrix.edit-plan.v1 envelope. Never throws for expected conditions — unsupported
 // languages, missing selections and LSP failures are explicit statuses, not exceptions.
-export async function buildRenamePlan({
-    repoRoot,
-    rawGraph,
-    targetId,
-    newName,
-    clientFactory = createRenameClient,
-    timeoutMs = 30_000,
-} = {}) {
+function prepareRename({repoRoot, rawGraph, targetId, newName}) {
     if (!repoRoot || !rawGraph || !targetId) throw new Error('rename plan requires repoRoot, rawGraph, and targetId')
     const id = String(targetId)
     const node = (rawGraph.nodes || []).find((candidate) => String(candidate?.id || '') === id)
-    if (!node) return {status: 'NOT_FOUND', reason: 'the selected symbol is not present in the active graph'}
+    if (!node) return {result: {status: 'NOT_FOUND', reason: 'the selected symbol is not present in the active graph'}}
     const declaringFile = String(node.source_file || id.split('#')[0] || '')
     if (!JS_TS_FILE_RE.test(declaringFile) || !node.selection_start || !node.selection_end) {
-        return {
+        return {result: {
             status: 'NOT_SUPPORTED',
             reason: 'exact rename planning currently supports JavaScript and TypeScript symbols with source selections; the graph reference inventory below is review evidence, not an edit plan',
             references: graphReferenceInventory(rawGraph, id, declaringFile),
-        }
+        }}
     }
     if (typeof newName !== 'string' || !IDENTIFIER_RE.test(newName)) {
-        return {status: 'INVALID_NEW_NAME', reason: 'new_name must be a valid JavaScript identifier'}
+        return {result: {status: 'INVALID_NEW_NAME', reason: 'new_name must be a valid JavaScript identifier'}}
     }
 
     const declaring = loadPlanFile(repoRoot, declaringFile)
-    if (declaring.error) return {status: 'SOURCE_UNAVAILABLE', reason: `${declaringFile}: ${declaring.error}`}
+    if (declaring.error) return {result: {status: 'SOURCE_UNAVAILABLE', reason: `${declaringFile}: ${declaring.error}`}}
     let oldName
     try {
         oldName = declaring.content.slice(
@@ -109,15 +102,14 @@ export async function buildRenamePlan({
             offsetAtLsp(declaring.content, node.selection_end.line, node.selection_end.character),
         )
     } catch (error) {
-        return {status: 'STALE_GRAPH', reason: `the symbol selection no longer matches the file: ${error.message}`}
+        return {result: {status: 'STALE_GRAPH', reason: `the symbol selection no longer matches the file: ${error.message}`}}
     }
-    if (!IDENTIFIER_RE.test(oldName)) return {status: 'STALE_GRAPH', reason: 'the graph selection does not cover an identifier; rebuild the graph'}
-    if (oldName === newName) return {status: 'NO_CHANGE', reason: 'the symbol already has that name'}
+    if (!IDENTIFIER_RE.test(oldName)) return {result: {status: 'STALE_GRAPH', reason: 'the graph selection does not cover an identifier; rebuild the graph'}}
+    if (oldName === newName) return {result: {status: 'NO_CHANGE', reason: 'the symbol already has that name'}}
+    return {id, node, declaringFile, declaring, oldName}
+}
 
-    // The graph is the project hint: opening every JS/TS file that references the symbol
-    // pulls those files into the language server's (possibly inferred, tsconfig-less)
-    // project, so cross-file renames work where a bare single-document session would
-    // silently rename only the declaration.
+function collectSessionFiles({repoRoot, rawGraph, id, declaringFile, declaring}) {
     const loadedByPath = new Map([[declaringFile, declaring]])
     const sessionFiles = [declaringFile]
     for (const reference of graphReferenceInventory(rawGraph, id, declaringFile)) {
@@ -128,16 +120,17 @@ export async function buildRenamePlan({
         loadedByPath.set(reference.path, loaded)
         sessionFiles.push(reference.path)
     }
+    return {loadedByPath, sessionFiles}
+}
+
+async function requestRename({repoRoot, declaringFile, node, newName, clientFactory, timeoutMs, loadedByPath, sessionFiles}) {
     let client = null
-    let renamed
     try {
-        // inside the try so a language-server startup failure is an honest LSP_FAILED
-        // status, not an escaped exception
         client = await clientFactory({repoRoot, timeoutMs})
         for (const file of sessionFiles) await client.openDocument(file, loadedByPath.get(file).content)
-        renamed = await client.rename(declaringFile, node.selection_start, newName, timeoutMs)
+        return {renamed: await client.rename(declaringFile, node.selection_start, newName, timeoutMs)}
     } catch (error) {
-        return {status: 'LSP_FAILED', reason: error?.message || 'textDocument/rename failed'}
+        return {result: {status: 'LSP_FAILED', reason: error?.message || 'textDocument/rename failed'}}
     } finally {
         if (client) {
             try {
@@ -147,8 +140,9 @@ export async function buildRenamePlan({
             }
         }
     }
-    if (!renamed.files.length) return {status: 'NO_EDITS', reason: 'the language server returned no edits for this rename'}
+}
 
+function collectRenameEvidence({repoRoot, renamed, loadedByPath, oldName, newName}) {
     const warnings = []
     const notModified = []
     const uncertainReferences = []
@@ -194,19 +188,47 @@ export async function buildRenamePlan({
         }
         if (!edits.length) continue
         planFiles.push({path: fileChange.file, sha256: sha256Hex(loaded.buffer), edits})
-        for (const occurrence of uncoveredOccurrences(loaded.content, oldName, covered).slice(0, MAX_UNCERTAIN)) {
+        const uncovered = uncoveredOccurrences(loaded.content, oldName, covered)
+        for (const occurrence of uncovered.slice(0, MAX_UNCERTAIN)) {
             uncertainReferences.push({path: fileChange.file, line: occurrence.line, kind: 'UNCOVERED_OCCURRENCE', excerpt: occurrence.excerpt})
         }
         if (uncoveredOccurrences(loaded.content, newName, []).length) warnings.push('POSSIBLE_SHADOWING')
     }
-    if (!planFiles.length) return {status: 'NO_EDITS', reason: 'every proposed edit target was unreadable or stale', notModified}
+    return {warnings, notModified, uncertainReferences, planFiles}
+}
 
+function appendGraphRemainder({rawGraph, id, declaringFile, planFiles, uncertainReferences}) {
     const editedFiles = new Set(planFiles.map((file) => file.path))
     for (const reference of graphReferenceInventory(rawGraph, id, declaringFile)) {
         if (editedFiles.has(reference.path)) continue
         if (uncertainReferences.length >= MAX_UNCERTAIN) break
         uncertainReferences.push({...reference, kind: 'GRAPH_REFERENCE_WITHOUT_EDIT'})
     }
+}
+
+export async function buildRenamePlan({
+    repoRoot,
+    rawGraph,
+    targetId,
+    newName,
+    clientFactory = createRenameClient,
+    timeoutMs = 30_000,
+} = {}) {
+    const prepared = prepareRename({repoRoot, rawGraph, targetId, newName})
+    if (prepared.result) return prepared.result
+    const {id, node, declaringFile, declaring, oldName} = prepared
+    const session = collectSessionFiles({repoRoot, rawGraph, id, declaringFile, declaring})
+    const response = await requestRename({
+        repoRoot, declaringFile, node, newName, clientFactory, timeoutMs, ...session,
+    })
+    if (response.result) return response.result
+    const {renamed} = response
+    if (!renamed.files.length) return {status: 'NO_EDITS', reason: 'the language server returned no edits for this rename'}
+
+    const evidence = collectRenameEvidence({repoRoot, renamed, oldName, newName, ...session})
+    const {warnings, notModified, uncertainReferences, planFiles} = evidence
+    if (!planFiles.length) return {status: 'NO_EDITS', reason: 'every proposed edit target was unreadable or stale', notModified}
+    appendGraphRemainder({rawGraph, id, declaringFile, planFiles, uncertainReferences})
     if (node.exported === true) warnings.push('PUBLIC_API_SYMBOL')
 
     const completeness = uncertainReferences.length || notModified.length ? 'PARTIAL' : 'COMPLETE'

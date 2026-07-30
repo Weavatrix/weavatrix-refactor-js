@@ -3,9 +3,9 @@
 // edges (usage:'sql') from .sql statements and embedded SQL in host code. Two honest
 // consequences shape this backend: (1) names are located LEXICALLY on the recorded line, not
 // by byte range; (2) ORM-generated and dynamically-built SQL is invisible, so completeness is
-// ALWAYS PARTIAL â€” never a proven-total rename. Table/view/function renames rewrite the
+// ALWAYS PARTIAL — never a proven-total rename. Table/view/function renames rewrite the
 // definition plus every table-reference the scanner saw. Column renames rewrite only the DDL
-// definition confidently â€” the graph carries no column-level usage edges, so column usages are
+// definition confidently — the graph carries no column-level usage edges, so column usages are
 // reported UNPROVEN, never guessed. Output is a real weavatrix.edit-plan.v1 (pure text edits).
 
 import {readFileSync} from 'node:fs'
@@ -98,7 +98,7 @@ export function buildSqlRenamePlan({repoRoot, rawGraph, symbolId, newName} = {})
         // collide everywhere)
         warnings.add('COLUMN_USAGES_NOT_TRACKED')
         return finalize({status: 'PLANNED', kind, oldName, newName, editsByFile, uncertain, warnings, rawGraph, repoRoot,
-            completenessNote: 'only the column definition is rewritten; SQL has no column-level usage edges, so every usage (queries, ORMs, host code) is UNPROVEN â€” review with bulk_replace scoped to this column if needed'})
+            completenessNote: 'only the column definition is rewritten; SQL has no column-level usage edges, so every usage (queries, ORMs, host code) is UNPROVEN — review with bulk_replace scoped to this column if needed'})
     }
 
     // table/view/function: rewrite every reference the scanner recorded, located per line
@@ -115,7 +115,7 @@ export function buildSqlRenamePlan({repoRoot, rawGraph, symbolId, newName} = {})
     warnings.add('ORM_AND_DYNAMIC_SQL_INVISIBLE')
     if (uncertain.length) warnings.add('UNCERTAIN_REFERENCES_PRESENT')
     return finalize({status: 'PLANNED', kind, oldName, newName, editsByFile, uncertain, warnings, rawGraph, repoRoot,
-        completenessNote: 'references are those the SQL scanner could read; ORM-generated and dynamically-built SQL is invisible, so this rename is never proven total â€” run verified_change and inspect ORM/query-builder call sites'})
+        completenessNote: 'references are those the SQL scanner could read; ORM-generated and dynamically-built SQL is invisible, so this rename is never proven total — run verified_change and inspect ORM/query-builder call sites'})
 }
 
 function finalize({status, kind, oldName, newName, editsByFile, uncertain, warnings, rawGraph, repoRoot, completenessNote}) {

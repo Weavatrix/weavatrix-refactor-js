@@ -2,7 +2,7 @@
 // The single dangerous operation in a file move is rewriting a specifier: get the extension
 // or index style wrong and the import silently breaks. Every function here fails to null
 // when it cannot prove the rewrite, so the caller reports UNCERTAIN rather than emit a
-// wrong edit. Non-relative (bare/alias) specifiers are never rewritten â€” resolution of
+// wrong edit. Non-relative (bare/alias) specifiers are never rewritten — resolution of
 // those is a resolver concern the file location does not determine.
 
 const JS_TS_EXT_RE = /\.(?:[cm]?[jt]sx?)$/i

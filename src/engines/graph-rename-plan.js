@@ -1,4 +1,4 @@
-﻿// Graph+lexical rename backend for the languages weavatrix indexes without a bundled LSP â€”
+﻿// Graph+lexical rename backend for the languages weavatrix indexes without a bundled LSP —
 // Rust, Python, Go, Java, C#, Solidity. It generalizes the SQL rename pattern to symbols:
 // the declaration and every call/reference the graph recorded are located LEXICALLY on their
 // edge's line and rewritten, as a real weavatrix.edit-plan.v1. Because there is no language

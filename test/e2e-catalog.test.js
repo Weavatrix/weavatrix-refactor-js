@@ -50,10 +50,16 @@ test('the live server merges core and edit tools under the refactor profile', as
         const list = await request(2, 'tools/list', {})
         assert.ok(list.result, `tools/list failed: ${JSON.stringify(list.error)}`)
         const names = list.result.tools.map((tool) => tool.name)
-        assert.ok(names.includes('apply_edit_plan'), 'apply_edit_plan missing from the merged catalog')
-        assert.ok(names.includes('rollback_last_apply'), 'rollback_last_apply missing from the merged catalog')
+        const expectedRefactorTools = [
+            'apply_edit_plan', 'rollback_last_apply', 'rename_symbol',
+            'rename_related_symbols', 'move_file', 'move_symbol', 'delete_readiness',
+            'change_signature', 'edit_symbol', 'bulk_replace', 'organize_imports',
+        ]
+        for (const name of expectedRefactorTools) {
+            assert.ok(names.includes(name), `${name} missing from the merged catalog`)
+        }
         assert.ok(names.includes('graph_stats'), 'core tools missing from the merged catalog')
-        assert.ok(names.length >= 36, `expected at least 36 tools (34 core + 2 edit), got ${names.length}`)
+        assert.ok(names.length >= 45, `expected at least 45 tools (34 core + 11 refactor), got ${names.length}`)
     } finally {
         child.kill()
     }

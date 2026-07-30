@@ -34,6 +34,32 @@ read-only evidence  ->  plan + preview + confirmation  ->  atomic write
 graph / LSP / audit     hashes / provenance / rollback     refreshed graph
 ```
 
+## Architecture
+
+The implementation is a ports-and-adapters system with one-way boundaries:
+
+```text
+edit-plan model  <-  filesystem / lock / token adapters
+       ^                         ^
+       |                         |
+plan engines     ->  preview / apply / rollback workflows  ->  MCP adapter
+```
+
+- **Model** validates the frozen `weavatrix.edit-plan.v1` envelope and applies
+  byte-exact edits as pure string transformations.
+- **Platform adapters** own real-path containment, atomic replacement,
+  repository locks, single-use tokens, and durable rollback bundles.
+- **Plan engines** compute rename, signature, symbol, import, move, delete, and
+  bulk-replace evidence without owning the write workflow.
+- **Application workflows** bind a preview to the current repository, issue and
+  consume confirmation tokens, apply under a lock, and restore on failure.
+- **MCP adapter** composes the 11 refactor tools with the read-only
+  `weavatrix-js` catalog and exposes one stdio server.
+
+The checked-in strict architecture contract enforces zero runtime cycles,
+files no longer than 300 lines, and functions no longer than 100 lines. It has
+no exceptions or ratchet baseline.
+
 ## What makes the refactor workflow different
 
 An ordinary editor rename answers: "Which text edits should I make now?"
@@ -227,14 +253,46 @@ Useful inherited surfaces include:
 See the [weavatrix-js README](https://github.com/sergii-ziborov/weavatrix-js)
 for the complete JavaScript host catalog.
 
-## Install
+## Run it
+
+Start the merged read-only-plus-refactor MCP server for one repository:
 
 ```bash
 npx -y weavatrix-refactor <repoRoot>
 ```
 
-Set `WEAVATRIX_ALLOW_SOURCE_EDITS=1` only for sessions in which apply and
-rollback should be enabled.
+For an MCP client, the minimal configuration is:
+
+```json
+{
+  "mcpServers": {
+    "weavatrix": {
+      "command": "npx",
+      "args": ["-y", "weavatrix-refactor", "/absolute/path/to/repository"]
+    }
+  }
+}
+```
+
+On Windows, use `npx.cmd` when the client does not resolve command shims.
+With no environment override, every analysis and preview tool works but source
+writes fail closed. Add `"env": {"WEAVATRIX_ALLOW_SOURCE_EDITS": "1"}` only
+for a session in which apply and rollback are deliberately authorized.
+
+Applications that already host `weavatrix-js` can compose the same extension:
+
+```js
+import {startMcpServer} from 'weavatrix-js/mcp-runtime'
+import {refactorExtension} from 'weavatrix-refactor/extension'
+
+await startMcpServer({
+  defaultCapabilities: 'refactor',
+  loadExtensions: async () => [refactorExtension()],
+})
+```
+
+The exported extension registers tools and the `refactor` capability profile;
+it does not silently open the write gate.
 
 ## Scope and honest limits
 

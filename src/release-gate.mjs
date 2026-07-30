@@ -19,9 +19,10 @@ if (lock.packages?.['']?.license !== own.license) failures.push('package-lock ro
 if (lock.packages?.['node_modules/weavatrix-js']?.version !== core.version) failures.push('package-lock weavatrix-js version does not match the installed package')
 if (server.version !== own.version || server.packages?.[0]?.version !== own.version) failures.push('MCP Registry metadata version does not match package.json')
 if (server.name !== own.mcpName) failures.push('MCP Registry name does not match package mcpName')
+if (server.description !== own.description) failures.push('MCP Registry description does not match package description')
 if (server.packages?.[0]?.identifier !== own.name) failures.push('MCP Registry package identifier does not match package name')
 if (!existsSync(releaseNotes) || !readFileSync(releaseNotes, 'utf8').trim()) failures.push('checked-in release notes are missing or empty')
-for (const required of ['bin', 'src', 'README.md', 'LICENSE', 'NOTICE', 'server.json']) {
+for (const required of ['.weavatrix', 'bin', 'src', 'README.md', 'LICENSE', 'NOTICE', 'server.json']) {
   if (!own.files?.includes(required)) failures.push(`published package files must include ${required}`)
 }
 if (process.env.GITHUB_REF_TYPE === 'tag' && process.env.GITHUB_REF_NAME !== `v${own.version}`) {

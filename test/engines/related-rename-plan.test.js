@@ -97,7 +97,7 @@ test('a swap (A->B, B->A) is planned with the simultaneous-semantics warning', a
     })
     assert.equal(result.status, 'PLANNED')
     assert.ok(result.plan.warnings.includes('RENAME_CHAIN_SIMULTANEOUS'))
-    // the sibling's old name is renamed away in the same atomic plan â€” shadowing is spurious here
+    // the sibling's old name is renamed away in the same atomic plan — shadowing is spurious here
     assert.equal(result.plan.warnings.includes('POSSIBLE_SHADOWING'), false)
     assert.equal(result.plan.files[0].edits.length, 4)
 })

@@ -3,7 +3,7 @@
 // sub-plans are merged with cross-rename conflict detection. Simultaneous-snapshot
 // semantics make chains and swaps well-defined (A->B, B->A both resolve against the
 // original names), which sequential IDE renames cannot express. All-or-nothing: any
-// failed or conflicting sub-rename blocks the whole plan â€” never a partial coordination.
+// failed or conflicting sub-rename blocks the whole plan — never a partial coordination.
 
 import {createHash} from 'node:crypto'
 import {buildRenamePlan} from './rename-plan.js'
@@ -21,7 +21,7 @@ const sameRange = (a, b) => a.startLine === b.startLine && a.startChar === b.sta
 // and duplicate didOpen notifications are suppressed, so every sub-rename shares the
 // same project session and the same document snapshots. The suppression doubles as the
 // snapshot guard: re-opening a file whose text drifted since its first open throws, which
-// buildRenamePlan converts to LSP_FAILED and the batch fails closed as BLOCKED â€” the
+// buildRenamePlan converts to LSP_FAILED and the batch fails closed as BLOCKED — the
 // server would otherwise keep the OLD text and the applier's hash check could not catch
 // the resulting coordinate skew.
 function sharedClientFactory(realClient) {
@@ -92,20 +92,7 @@ function mergeSubPlans(results) {
     return {files, conflicts}
 }
 
-export async function buildRelatedRenamePlan({
-    repoRoot,
-    rawGraph,
-    renames,
-    clientFactory,
-    createClient = createRenameClient,
-    timeoutMs = 30_000,
-} = {}) {
-    if (!repoRoot || !rawGraph) throw new Error('related rename requires repoRoot and rawGraph')
-    const invalid = validateRenames(renames)
-    if (invalid) return {status: 'INVALID_RENAMES', reason: invalid}
-
-    // simultaneous-snapshot semantics: warn when names chain or swap so the agent reads
-    // the result as "all old names resolve against the original file state"
+async function planRenameBatch({repoRoot, rawGraph, renames, clientFactory, createClient, timeoutMs}) {
     const oldById = new Map()
     const warnings = new Set()
     let realClient = null
@@ -148,6 +135,25 @@ export async function buildRelatedRenamePlan({
             }
         }
     }
+    return {oldById, warnings, results, failures}
+}
+
+export async function buildRelatedRenamePlan({
+    repoRoot,
+    rawGraph,
+    renames,
+    clientFactory,
+    createClient = createRenameClient,
+    timeoutMs = 30_000,
+} = {}) {
+    if (!repoRoot || !rawGraph) throw new Error('related rename requires repoRoot and rawGraph')
+    const invalid = validateRenames(renames)
+    if (invalid) return {status: 'INVALID_RENAMES', reason: invalid}
+
+    const batch = await planRenameBatch({
+        repoRoot, rawGraph, renames, clientFactory, createClient, timeoutMs,
+    })
+    const {oldById, warnings, results, failures} = batch
     if (failures.length) {
         return {
             status: 'BLOCKED',
@@ -161,7 +167,7 @@ export async function buildRelatedRenamePlan({
     const newNames = new Set()
     for (const result of results) {
         // a new name that is also some rename's OLD name = chain/swap: valid, but only
-        // under simultaneous-snapshot semantics â€” surface that explicitly
+        // under simultaneous-snapshot semantics — surface that explicitly
         if (oldNames.has(result.newName)) warnings.add('RENAME_CHAIN_SIMULTANEOUS')
         if (newNames.has(result.newName)) warnings.add('POSSIBLE_NEW_NAME_COLLISION')
         newNames.add(result.newName)
@@ -177,7 +183,7 @@ export async function buildRelatedRenamePlan({
     for (const result of results) {
         for (const warning of result.plan.warnings) {
             // a chain/swap sub-rename sees its sibling's OLD name in the files and flags
-            // shadowing â€” but those occurrences are renamed away in this same atomic
+            // shadowing — but those occurrences are renamed away in this same atomic
             // plan, so the standalone-rename warning is spurious here
             if (warning === 'POSSIBLE_SHADOWING' && oldNames.has(result.newName)) continue
             warnings.add(warning)

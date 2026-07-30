@@ -74,7 +74,7 @@ test('mid-batch disk drift of a session file fails the batch closed as BLOCKED',
         'b.ts': 'export const two = 2\n',
     })
     // b.ts is a graph reference of rename 1 (opened into the session) AND the declaring
-    // file of rename 2 (re-opened) â€” the drift guard must catch the mid-batch change
+    // file of rename 2 (re-opened) — the drift guard must catch the mid-batch change
     const rawGraph = graphWith([
         node('a.ts#one@1', 'one', 'a.ts', 13, 16),
         node('b.ts#two@1', 'two', 'b.ts', 13, 16),

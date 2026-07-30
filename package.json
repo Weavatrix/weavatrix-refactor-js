@@ -1,8 +1,8 @@
 {
   "name": "weavatrix-refactor",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "type": "module",
-  "description": "The only Weavatrix component that writes code. Applies hash-verified edit plans computed and proven by the read-only weavatrix-js core: preview in core, confirm token, apply here, rollback always possible.",
+  "description": "Transactional refactoring MCP for coding agents: 11 evidence-backed plan/apply tools, hash-bound previews, single-use confirmation, atomic writes, and rollback.",
   "author": "Sergii Ziborov <sergii.ziborov@gmail.com>",
   "license": "MIT",
   "homepage": "https://weavatrix.com",
@@ -25,6 +25,7 @@
     "./package.json": "./package.json"
   },
   "files": [
+    ".weavatrix",
     "bin",
     "src",
     "skill",
@@ -47,6 +48,9 @@
     "refactoring",
     "rename-symbol",
     "safe-refactoring",
+    "transactional-refactoring",
+    "atomic-write",
+    "rollback",
     "code-edit",
     "weavatrix",
     "claude",

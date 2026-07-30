@@ -1,4 +1,5 @@
 node_modules/
-.weavatrix/
+.weavatrix/*
+!.weavatrix/architecture.json
 *.tgz
 .DS_Store

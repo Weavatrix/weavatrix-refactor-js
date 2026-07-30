@@ -4,7 +4,7 @@
 // renames ids and a naive id comparison reports false orphans; this matcher keys symbols
 // and callers by (source_file, bare name, edge type) instead, mapping declared renames
 // and file moves so a refactored symbol is compared against its own new identity.
-// The dangerous direction is a false CONSERVED â€” every ambiguity resolves against it:
+// The dangerous direction is a false CONSERVED — every ambiguity resolves against it:
 // edge types are part of the identity, mapped callers never fall back to a recycled old
 // name, shrunken same-name declaration counts surface as warnings, and a baseline this
 // matcher could not fully index is reported as such instead of silently blessed.
@@ -114,7 +114,7 @@ export function verifyRefactorConservation({baselineGraph, currentGraph, renames
         const beforeDecls = baselineDecls.get(baselineKey) || 0
         const afterDecls = currentDecls.get(expected.key) || 0
         if (afterDecls < beforeDecls && warnings.length < MAX_REPORTED) {
-            warnings.push({kind: 'DECLARATION_COUNT_SHRUNK', file: entry.file, name: entry.name, before: beforeDecls, after: afterDecls, detail: 'same-named declarations merged for caller matching; one of them disappeared â€” verify the deletion was intended'})
+            warnings.push({kind: 'DECLARATION_COUNT_SHRUNK', file: entry.file, name: entry.name, before: beforeDecls, after: afterDecls, detail: 'same-named declarations merged for caller matching; one of them disappeared — verify the deletion was intended'})
         }
         const afterCallers = after ? after.callers : new Map()
         const lost = []

@@ -2,10 +2,10 @@
 // on the strongest competitor mechanics, upgraded with true cross-file atomicity:
 // stage 1 (no selection) previews every occurrence with a stable id; stage 2 plans only
 // the selected occurrence_ids (or all, guarded by expected_count). The emitted
-// weavatrix.edit-plan.v1 carries LEXICAL_EXACT provenance â€” these edits are proven by
+// weavatrix.edit-plan.v1 carries LEXICAL_EXACT provenance — these edits are proven by
 // byte-exact before-text, not by parser or language-server evidence, and the applier
 // re-verifies that before-text under the file hash at apply time.
-// The scanned universe is the graph's indexed file list: honest and bounded â€” files the
+// The scanned universe is the graph's indexed file list: honest and bounded — files the
 // graph does not know are reported as a limitation, never silently skipped.
 
 import {readFileSync} from 'node:fs'
@@ -32,7 +32,7 @@ function graphFiles(rawGraph) {
     return [...files].sort()
 }
 
-// $1..$9, $& and $$ expansion against the actual match array â€” never by re-running the
+// $1..$9, $& and $$ expansion against the actual match array — never by re-running the
 // pattern on the matched substring, which silently breaks lookarounds and anchors
 // Full JS String.replace substitution semantics against the actual match array:
 // $$ -> $, $& -> whole match, $<name> -> named group, $n / $nn -> numbered group
@@ -107,18 +107,7 @@ function scanFile(file, content, regex, replacement, literal) {
 // Stage 1: preview {status:'PREVIEW', occurrences, total, capped}. Stage 2 (with
 // occurrence_ids or expected_count): {status:'PLANNED', plan}. Fail-closed statuses for
 // invalid patterns, unknown ids, count mismatches, and no matches.
-export function buildBulkReplacePlan({
-    repoRoot,
-    rawGraph,
-    pattern,
-    replacement,
-    literal = true,
-    flags = '',
-    path_prefix = '',
-    occurrence_ids = null,
-    expected_count = null,
-} = {}) {
-    if (!repoRoot || !rawGraph) throw new Error('bulk replace requires repoRoot and rawGraph')
+function compilePattern({pattern, replacement, literal, flags}) {
     if (typeof pattern !== 'string' || !pattern.length) return {status: 'INVALID_PATTERN', reason: 'pattern must be a non-empty string'}
     if (pattern.length > MAX_PATTERN_LENGTH) return {status: 'INVALID_PATTERN', reason: `pattern exceeds ${MAX_PATTERN_LENGTH} characters`}
     if (typeof replacement !== 'string') return {status: 'INVALID_PATTERN', reason: 'replacement must be a string'}
@@ -129,11 +118,12 @@ export function buildBulkReplacePlan({
     } catch (error) {
         return {status: 'INVALID_PATTERN', reason: error.message}
     }
+    return {regex}
+}
 
-    // path_prefix is a directory prefix, segment-anchored so 'src' never matches
-    // 'src-evil/â€¦'; it may also name one exact file.
-    const dirPrefix = path_prefix && !path_prefix.endsWith('/') ? `${path_prefix}/` : path_prefix
-    const files = graphFiles(rawGraph).filter((file) => !path_prefix || file === path_prefix || file.startsWith(dirPrefix))
+function scanRepository({repoRoot, rawGraph, regex, replacement, literal, pathPrefix}) {
+    const dirPrefix = pathPrefix && !pathPrefix.endsWith('/') ? `${pathPrefix}/` : pathPrefix
+    const files = graphFiles(rawGraph).filter((file) => !pathPrefix || file === pathPrefix || file.startsWith(dirPrefix))
     const warnings = []
     const skipped = []
     const occurrences = []
@@ -176,46 +166,34 @@ export function buildBulkReplacePlan({
     if (capped) warnings.push('SCAN_CAPPED')
     if (skipped.length) warnings.push('FILES_SKIPPED')
     warnings.push('INDEXED_UNIVERSE_ONLY')
+    return {warnings, skipped, occurrences, scanned, capped, zeroWidthTotal}
+}
 
-    if (!occurrences.length) {
-        if (zeroWidthTotal) {
-            return {status: 'ZERO_WIDTH_UNSUPPORTED', reason: `the pattern matched ${zeroWidthTotal} zero-width position(s) but bulk_replace only replaces non-empty matches; use an insert operation for insertion points`, scannedFiles: scanned, warnings, skipped}
-        }
-        return {status: 'NO_MATCHES', reason: 'no occurrence of the pattern exists in the indexed universe', scannedFiles: scanned, warnings, skipped}
-    }
-
-    const selecting = Array.isArray(occurrence_ids)
-    if (!selecting && expected_count === null) {
-        return {
-            status: 'PREVIEW',
-            total: occurrences.length,
-            scannedFiles: scanned,
-            occurrences: occurrences.map(({sha256, ...rest}) => rest),
-            warnings,
-            skipped,
-            next: 'call again with occurrence_ids=[...] to plan a selection, or expected_count=<total> to plan everything',
-        }
-    }
+function selectOccurrences({occurrences, occurrenceIds, expectedCount, warnings}) {
+    const selecting = Array.isArray(occurrenceIds)
     let chosen = occurrences
     if (selecting) {
-        const wanted = new Set(occurrence_ids.map(String))
-        if (!wanted.size) return {status: 'NO_SELECTION', reason: 'occurrence_ids was empty; select at least one occurrence, or use expected_count to plan all', warnings}
+        const wanted = new Set(occurrenceIds.map(String))
+        if (!wanted.size) return {result: {status: 'NO_SELECTION', reason: 'occurrence_ids was empty; select at least one occurrence, or use expected_count to plan all', warnings}}
         chosen = occurrences.filter((occurrence) => wanted.has(occurrence.id))
         if (chosen.length !== wanted.size) {
             const known = new Set(chosen.map((occurrence) => occurrence.id))
             const unknown = [...wanted].filter((id) => !known.has(id))
-            return {status: 'UNKNOWN_OCCURRENCES', reason: 'some occurrence_ids do not match the current scan; re-preview and reselect', unknown, warnings}
+            return {result: {status: 'UNKNOWN_OCCURRENCES', reason: 'some occurrence_ids do not match the current scan; re-preview and reselect', unknown, warnings}}
         }
     }
-    if (expected_count !== null && chosen.length !== expected_count) {
-        return {
+    if (expectedCount !== null && chosen.length !== expectedCount) {
+        return {result: {
             status: 'COUNT_MISMATCH',
-            reason: `expected ${expected_count} occurrence(s) but the scan found ${chosen.length}; the repository changed or the estimate was wrong â€” re-preview`,
+            reason: `expected ${expectedCount} occurrence(s) but the scan found ${chosen.length}; the repository changed or the estimate was wrong — re-preview`,
             total: chosen.length,
             warnings,
-        }
+        }}
     }
+    return {chosen}
+}
 
+function groupPlanFiles(chosen) {
     const byFile = new Map()
     for (const occurrence of chosen) {
         if (!byFile.has(occurrence.file)) byFile.set(occurrence.file, {path: occurrence.file, sha256: occurrence.sha256, edits: []})
@@ -229,6 +207,50 @@ export function buildBulkReplacePlan({
             provenance: 'LEXICAL_EXACT',
         })
     }
+    return byFile
+}
+
+export function buildBulkReplacePlan({
+    repoRoot,
+    rawGraph,
+    pattern,
+    replacement,
+    literal = true,
+    flags = '',
+    path_prefix = '',
+    occurrence_ids = null,
+    expected_count = null,
+} = {}) {
+    if (!repoRoot || !rawGraph) throw new Error('bulk replace requires repoRoot and rawGraph')
+    const compiled = compilePattern({pattern, replacement, literal, flags})
+    if (!compiled.regex) return compiled
+    const scan = scanRepository({
+        repoRoot, rawGraph, regex: compiled.regex, replacement, literal, pathPrefix: path_prefix,
+    })
+    const {warnings, skipped, occurrences, scanned, capped, zeroWidthTotal} = scan
+    if (!occurrences.length) {
+        if (zeroWidthTotal) {
+            return {status: 'ZERO_WIDTH_UNSUPPORTED', reason: `the pattern matched ${zeroWidthTotal} zero-width position(s) but bulk_replace only replaces non-empty matches; use an insert operation for insertion points`, scannedFiles: scanned, warnings, skipped}
+        }
+        return {status: 'NO_MATCHES', reason: 'no occurrence of the pattern exists in the indexed universe', scannedFiles: scanned, warnings, skipped}
+    }
+    if (!Array.isArray(occurrence_ids) && expected_count === null) {
+        return {
+            status: 'PREVIEW',
+            total: occurrences.length,
+            scannedFiles: scanned,
+            occurrences: occurrences.map(({sha256, ...rest}) => rest),
+            warnings,
+            skipped,
+            next: 'call again with occurrence_ids=[...] to plan a selection, or expected_count=<total> to plan everything',
+        }
+    }
+    const selection = selectOccurrences({
+        occurrences, occurrenceIds: occurrence_ids, expectedCount: expected_count, warnings,
+    })
+    if (selection.result) return selection.result
+    const {chosen} = selection
+    const byFile = groupPlanFiles(chosen)
     return {
         status: 'PLANNED',
         total: chosen.length,
