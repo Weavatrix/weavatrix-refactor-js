@@ -11,7 +11,7 @@ test('extension validates against the published core extension API', () => {
     const names = extension.tools.map((tool) => tool.name)
     for (const name of [...WRITE_WORKFLOWS, ...PLAN_TOOLS]) assert.ok(names.includes(name), `missing tool ${name}`)
     assert.deepEqual(extension.profiles.refactor, ['graph', 'search', 'source', 'health', 'build', 'retarget', 'crossrepo', 'edit'])
-    assert.deepEqual(extension.skills, [{name: 'weavatrix-refactor', path: 'skill/SKILL.md'}])
+    assert.deepEqual(extension.skills, [{name: 'weavatrix-refactor-js', path: 'skill/SKILL.md'}])
 })
 
 test('rename workflows and appliers carry write capability; other plan producers are read-only', () => {

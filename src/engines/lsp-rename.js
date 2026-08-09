@@ -1,4 +1,4 @@
-// The rename-specific LSP composition lives HERE, in weavatrix-refactor, not in the core.
+// The rename-specific LSP composition lives HERE, in weavatrix-refactor-js, not in the core.
 // The core exposes only a generic read-only LSP client (request/toUri/fromUri); this module
 // issues textDocument/rename and normalizes the returned WorkspaceEdit to repo-relative
 // files. Still purely a read: the language server computes the edits, nothing is applied

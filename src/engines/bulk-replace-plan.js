@@ -1,4 +1,4 @@
-﻿// Occurrence-selective bulk replace as an edit-plan producer. Two-stage contract modeled
+// Occurrence-selective bulk replace as an edit-plan producer. Two-stage contract modeled
 // on the strongest competitor mechanics, upgraded with true cross-file atomicity:
 // stage 1 (no selection) previews every occurrence with a stable id; stage 2 plans only
 // the selected occurrence_ids (or all, guarded by expected_count). The emitted
@@ -264,7 +264,7 @@ export function buildBulkReplacePlan({
             uncertainReferences: [],
             notModified: skipped.map(({file, reason}) => ({path: file, reason})),
             warnings,
-            followUp: 'apply with weavatrix-refactor apply_edit_plan (preview -> confirm) or your editor, then run verified_change phase=verify',
+            followUp: 'apply with weavatrix-refactor-js apply_edit_plan (preview -> confirm) or your editor, then run verified_change phase=verify',
         },
     }
 }

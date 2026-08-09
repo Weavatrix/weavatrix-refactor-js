@@ -1,7 +1,7 @@
-﻿// Builds a weavatrix.edit-plan.v1 envelope for a symbol rename. Pure read: the bundled
+// Builds a weavatrix.edit-plan.v1 envelope for a symbol rename. Pure read: the bundled
 // TypeScript language server computes the WorkspaceEdit, this module turns it into an
 // hash-bound edit plan with honest uncertainty labels. Nothing here writes source files;
-// applying a plan is owned by the separate weavatrix-refactor package (ADR 0002).
+// applying a plan is owned by the separate weavatrix-refactor-js package (ADR 0002).
 
 import {readFileSync} from 'node:fs'
 import {resolve} from 'node:path'
@@ -282,7 +282,7 @@ export async function buildRenamePlan({
             uncertainReferences,
             notModified,
             warnings: [...new Set(warnings)],
-            followUp: 'apply with weavatrix-refactor apply_edit_plan (preview -> confirm) or your editor, then run verified_change phase=verify',
+            followUp: 'apply with weavatrix-refactor-js apply_edit_plan (preview -> confirm) or your editor, then run verified_change phase=verify',
         },
         renamedEdits: planFiles.reduce((sum, file) => sum + file.edits.length, 0),
         renamedFiles: planFiles.length,

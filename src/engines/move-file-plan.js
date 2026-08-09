@@ -1,8 +1,8 @@
-﻿// move_file plan producer (ADR 0002, plan-only): relocates a file and rewrites the import
+// move_file plan producer (ADR 0002, plan-only): relocates a file and rewrites the import
 // specifiers that a relocation invalidates — the moved file's own relative imports and
 // every importer that reaches it — then reports the architecture dry-run verdict for the
 // new location. A file move is not a pure text edit (it renames a file, which the
-// weavatrix-refactor applier deliberately refuses), so this emits a REVIEW plan the calling
+// weavatrix-refactor-js applier deliberately refuses), so this emits a REVIEW plan the calling
 // agent applies (rename + edits), not a weavatrix.edit-plan.v1 envelope. Every specifier the
 // arithmetic cannot prove is reported UNCERTAIN, never rewritten wrongly.
 

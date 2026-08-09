@@ -1,17 +1,26 @@
-# weavatrix-refactor
+# Weavatrix Refactor JS
+
+> This is the JavaScript refactoring engine of Weavatrix, continued as
+> `weavatrix-refactor-js`. The
+> [`weavatrix-refactor`](https://www.npmjs.com/package/weavatrix-refactor)
+> package ships the native Rust MCP host built on
+> [weavatrix-rust](https://github.com/sergii-ziborov/weavatrix-rust) and the
+> `weavatrix-edit` / `weavatrix-refactor-plan` / `weavatrix-worktree` crates.
+> Pin `weavatrix-refactor@0.1.6` or install `weavatrix-refactor-js` to stay on
+> the JavaScript implementation.
 
 Evidence-backed, transactional refactoring for coding agents.
 
-`weavatrix-refactor` is the write-capable member of the Weavatrix family. It
+`weavatrix-refactor-js` is the write-capable member of the JavaScript family. It
 combines the complete read-only `weavatrix-js` code-intelligence MCP with 11
 refactoring tools that can prove a change, preview it against the current
 working tree, apply it atomically, refresh the graph, and roll it back.
 
-> **Current 0.1.x boundary:** this package still hosts the legacy
-> `weavatrix-js` engine. It does not yet use the native `weavatrix-rust`
-> engine shipped by the current `weavatrix` npm package. Installing both
-> packages does not silently upgrade Refactor's analysis layer; that requires
-> the explicit [Rust migration](docs/rust-migration.md).
+> **Engine boundary:** this package hosts the `weavatrix-js` engine. It does not
+> use the native `weavatrix-rust` engine, and installing both packages does not
+> silently upgrade this one's analysis layer. Its state lives in
+> `~/.weavatrix-refactor-js`, kept separate from the Rust host's so the two
+> never share a lock, a token store, or a rollback journal.
 
 It is substantially more than a rename wrapper:
 
@@ -35,7 +44,7 @@ capability visible; without this package, the server cannot modify source.
 The split is a safety property, not packaging cosmetics:
 
 ```text
-weavatrix-js core       weavatrix-refactor                 repository
+weavatrix-js core       weavatrix-refactor-js                 repository
 read-only evidence  ->  plan + preview + confirmation  ->  atomic write
 graph / LSP / audit     hashes / provenance / rollback     refreshed graph
 ```
@@ -229,7 +238,7 @@ collapsed into a generic failure.
 
 Repository source changes require all three:
 
-1. `weavatrix-refactor` is installed and the `refactor` profile selects `edit`;
+1. `weavatrix-refactor-js` is installed and the `refactor` profile selects `edit`;
 2. the server starts with `WEAVATRIX_ALLOW_SOURCE_EDITS=1`;
 3. the apply call presents a valid, unexpired, single-use token bound to the
    exact plan and repository.
@@ -266,7 +275,7 @@ for the complete JavaScript host catalog.
 Start the merged read-only-plus-refactor MCP server for one repository:
 
 ```bash
-npx -y weavatrix-refactor <repoRoot>
+npx -y weavatrix-refactor-js <repoRoot>
 ```
 
 For an MCP client, the minimal configuration is:
@@ -276,7 +285,7 @@ For an MCP client, the minimal configuration is:
   "mcpServers": {
     "weavatrix": {
       "command": "npx",
-      "args": ["-y", "weavatrix-refactor", "/absolute/path/to/repository"]
+      "args": ["-y", "weavatrix-refactor-js", "/absolute/path/to/repository"]
     }
   }
 }
@@ -291,7 +300,7 @@ Applications that already host `weavatrix-js` can compose the same extension:
 
 ```js
 import {startMcpServer} from 'weavatrix-js/mcp-runtime'
-import {refactorExtension} from 'weavatrix-refactor/extension'
+import {refactorExtension} from 'weavatrix-refactor-js/extension'
 
 await startMcpServer({
   defaultCapabilities: 'refactor',
@@ -320,7 +329,7 @@ it does not silently open the write gate.
 | Package | License | Responsibility |
 | --- | --- | --- |
 | `weavatrix-js` | MIT | Read-only JavaScript graph, analysis, evidence, architecture, and verification |
-| `weavatrix-refactor` | MIT | Proven refactor plans, transactional writes, and rollback |
+| `weavatrix-refactor-js` | MIT | Proven refactor plans, transactional writes, and rollback |
 | `weavatrix-online` | MIT | Explicit public network connector and remote plan/evidence workflows |
 
 The refactor package extends the legacy JavaScript core only through

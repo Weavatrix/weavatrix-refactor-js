@@ -1,7 +1,7 @@
 # Edit plan schema — v1
 
-Status: frozen and shipping (weavatrix-refactor 0.1.0; this doc is in the package
-`files`). `weavatrix.edit-plan.v1` is the contract between weavatrix-refactor's
+Status: frozen and shipping (weavatrix-refactor-js 0.1.0; this doc is in the package
+`files`). `weavatrix.edit-plan.v1` is the contract between weavatrix-refactor-js's
 read-only plan-producer tools — which compute and prove plans against the core's
 read-only `weavatrix-js/analysis-kit` surface — and its apply tools, which consume
 and apply them. Changes require a `schemaVersion` bump and a compatible-pair
@@ -68,7 +68,7 @@ release.
 
 ## Apply gates (all three required)
 
-1. `weavatrix-refactor` installed and its `refactor` profile selected.
+1. `weavatrix-refactor-js` installed and its `refactor` profile selected.
 2. `WEAVATRIX_ALLOW_SOURCE_EDITS=1` in the environment.
 3. Valid unexpired `confirmToken` whose bound hashes still match the working
    tree at apply time (re-checked under the core file lock).
@@ -77,11 +77,11 @@ release.
 
 | Producer (read-only) | Package |
 | --- | --- |
-| `rename_symbol` / `rename_related_symbols` | weavatrix-refactor |
-| `move_file` / `move_symbol` | weavatrix-refactor |
-| `delete_readiness` | weavatrix-refactor |
-| `change_signature` | weavatrix-refactor |
-| `edit_symbol` / `bulk_replace` / `organize_imports` | weavatrix-refactor |
+| `rename_symbol` / `rename_related_symbols` | weavatrix-refactor-js |
+| `move_file` / `move_symbol` | weavatrix-refactor-js |
+| `delete_readiness` | weavatrix-refactor-js |
+| `change_signature` | weavatrix-refactor-js |
+| `edit_symbol` / `bulk_replace` / `organize_imports` | weavatrix-refactor-js |
 | `plan_refactor` | weavatrix-online (paid) |
 
 `move_file`, `move_symbol`, and `delete_readiness` return a review plan /
@@ -90,5 +90,5 @@ the mechanical change yourself, then re-verify with `verified_change`.
 
 | Consumer (writes) | Package |
 | --- | --- |
-| `apply_edit_plan` | weavatrix-refactor |
-| `rollback_last_apply` | weavatrix-refactor |
+| `apply_edit_plan` | weavatrix-refactor-js |
+| `rollback_last_apply` | weavatrix-refactor-js |

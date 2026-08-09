@@ -1,4 +1,4 @@
-// Plan-producer refactoring tools. This is where refactoring LIVES: weavatrix-refactor is
+// Plan-producer refactoring tools. This is where refactoring LIVES: weavatrix-refactor-js is
 // the refactoring MCP — it registers every refactoring operation (rename, move, delete
 // readiness, change signature, bulk replace, organize imports, symbol edits) plus the apply
 // side (tools.mjs). The engines themselves are read-only plan producers in this package's

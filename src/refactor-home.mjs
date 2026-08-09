@@ -9,7 +9,7 @@ import {join, resolve} from 'node:path'
 
 export const TOKEN_TTL_MS = 5 * 60 * 1000
 
-export const refactorHome = () => process.env.WEAVATRIX_REFACTOR_HOME || join(homedir(), '.weavatrix-refactor')
+export const refactorHome = () => process.env.WEAVATRIX_REFACTOR_HOME || join(homedir(), '.weavatrix-refactor-js')
 
 export const sha256Hex = (data) => createHash('sha256').update(data).digest('hex')
 

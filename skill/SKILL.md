@@ -1,9 +1,9 @@
 ---
-name: weavatrix-refactor
-description: "Apply hash-verified refactoring edit plans: a weavatrix-refactor plan producer computes and proves a plan against the read-only core, then apply_edit_plan previews it (issuing a confirm token), applies with automatic rollback, and verified_change proves it. The only Weavatrix component that writes code."
+name: weavatrix-refactor-js
+description: "Apply hash-verified refactoring edit plans: a weavatrix-refactor-js plan producer computes and proves a plan against the read-only core, then apply_edit_plan previews it (issuing a confirm token), applies with automatic rollback, and verified_change proves it. The only Weavatrix component that writes code."
 ---
 
-# weavatrix-refactor MCP
+# weavatrix-refactor-js MCP
 
 The write-side layer of the Weavatrix stack. The MIT `weavatrix-js` core is safe by design: its
 published artifact contains no source-writing paths. This package's read-only plan producers
@@ -16,7 +16,7 @@ proved, and hashed, never inventing edits of its own.
 Tools are named `mcp__weavatrix__…` (one merged catalog: core tools plus this extension). If
 `apply_edit_plan` is absent, either this package is not installed, its `refactor` profile is not
 selected, or the write gate is closed. Register with:
-`claude mcp add -s user weavatrix -- npx -y weavatrix-refactor <repoRoot>`
+`claude mcp add -s user weavatrix -- npx -y weavatrix-refactor-js <repoRoot>`
 (the bin defaults to the `refactor` profile: all seven offline core capabilities plus `edit`).
 
 ## The write gates
@@ -44,7 +44,7 @@ edits with your own editor, then run `verified_change phase=verify` as usual.
 
 ## The refactoring loop
 
-1. **Plan (read-only)**: call a weavatrix-refactor plan producer — `rename_symbol`,
+1. **Plan (read-only)**: call a weavatrix-refactor-js plan producer — `rename_symbol`,
    `rename_related_symbols`, `change_signature`, `edit_symbol`, `bulk_replace`, `organize_imports`
    (each emits a `weavatrix.edit-plan.v1` envelope), or `move_file` / `move_symbol` /
    `delete_readiness` (a review plan / dry-run / verdict you apply yourself) — or take a
@@ -77,7 +77,7 @@ edits with your own editor, then run `verified_change phase=verify` as usual.
 
 ## Troubleshooting
 
-- `STALE` → the working tree changed after preview; re-run the weavatrix-refactor plan producer for a fresh plan.
+- `STALE` → the working tree changed after preview; re-run the weavatrix-refactor-js plan producer for a fresh plan.
 - `TOKEN_EXPIRED` / `TOKEN_UNKNOWN` → previews are single-use and short-lived by design; re-preview.
 - `WRITE_GATE_CLOSED` → set `WEAVATRIX_ALLOW_SOURCE_EDITS=1` on the server (a deliberate,
   user-visible choice) or apply the plan manually with your editor.

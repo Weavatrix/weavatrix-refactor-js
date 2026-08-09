@@ -30,8 +30,8 @@ if (process.env.GITHUB_REF_TYPE === 'tag' && process.env.GITHUB_REF_NAME !== `v$
 }
 
 if (failures.length) {
-  process.stderr.write(`weavatrix-refactor is not publishable yet:\n- ${failures.join('\n- ')}\n`)
+  process.stderr.write(`weavatrix-refactor-js is not publishable yet:\n- ${failures.join('\n- ')}\n`)
   process.exitCode = 1
 } else {
-  process.stdout.write(`release gate passed for weavatrix-refactor ${own.version} over weavatrix-js ${core.version}\n`)
+  process.stdout.write(`release gate passed for weavatrix-refactor-js ${own.version} over weavatrix-js ${core.version}\n`)
 }

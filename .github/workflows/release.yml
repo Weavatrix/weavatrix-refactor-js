@@ -48,8 +48,8 @@ jobs:
         shell: bash
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          if npm view "weavatrix-refactor@$VERSION" version >/dev/null 2>&1; then
-            echo "weavatrix-refactor@$VERSION is already published"
+          if npm view "weavatrix-refactor-js@$VERSION" version >/dev/null 2>&1; then
+            echo "weavatrix-refactor-js@$VERSION is already published"
           else
             npm publish --ignore-scripts --provenance --access public
           fi
@@ -57,8 +57,8 @@ jobs:
           PUBLISHED_HEAD=""
           PREDICATE=""
           for attempt in $(seq 1 24); do
-            PUBLISHED_HEAD="$(npm view "weavatrix-refactor@$VERSION" gitHead --json 2>/dev/null | tr -d '\"\r\n' || true)"
-            PREDICATE="$(npm view "weavatrix-refactor@$VERSION" dist.attestations.provenance.predicateType --json 2>/dev/null | tr -d '\"\r\n' || true)"
+            PUBLISHED_HEAD="$(npm view "weavatrix-refactor-js@$VERSION" gitHead --json 2>/dev/null | tr -d '\"\r\n' || true)"
+            PREDICATE="$(npm view "weavatrix-refactor-js@$VERSION" dist.attestations.provenance.predicateType --json 2>/dev/null | tr -d '\"\r\n' || true)"
             if [[ "$PUBLISHED_HEAD" == "$GITHUB_SHA" && "$PREDICATE" == "https://slsa.dev/provenance/v1" ]]; then
               break
             fi
@@ -80,9 +80,9 @@ jobs:
         shell: bash
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          REGISTRY_RESPONSE="$(curl --fail --silent --show-error 'https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.sergii-ziborov%2Fweavatrix-refactor')"
+          REGISTRY_RESPONSE="$(curl --fail --silent --show-error 'https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.sergii-ziborov%2Fweavatrix-refactor-js')"
           if jq --exit-status --arg version "$VERSION" \
-            '.servers[]?.server | select(.name == "io.github.sergii-ziborov/weavatrix-refactor" and .version == $version)' \
+            '.servers[]?.server | select(.name == "io.github.sergii-ziborov/weavatrix-refactor-js" and .version == $version)' \
             <<<"$REGISTRY_RESPONSE" >/dev/null; then
             echo "MCP Registry already contains Weavatrix Refactor $VERSION; skipping publish"
           else

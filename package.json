@@ -1,6 +1,6 @@
 {
-  "name": "weavatrix-refactor",
-  "version": "0.1.6",
+  "name": "weavatrix-refactor-js",
+  "version": "0.1.7",
   "type": "module",
   "description": "Transactional refactoring MCP with 11 evidence-backed tools, hash-bound previews, and rollback.",
   "author": "Sergii Ziborov <sergii.ziborov@gmail.com>",
@@ -8,17 +8,17 @@
   "homepage": "https://weavatrix.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sergii-ziborov/weavatrix-refactor.git"
+    "url": "git+https://github.com/sergii-ziborov/weavatrix-refactor-js.git"
   },
   "bugs": {
-    "url": "https://github.com/sergii-ziborov/weavatrix-refactor/issues"
+    "url": "https://github.com/sergii-ziborov/weavatrix-refactor-js/issues"
   },
-  "mcpName": "io.github.sergii-ziborov/weavatrix-refactor",
+  "mcpName": "io.github.sergii-ziborov/weavatrix-refactor-js",
   "engines": {
     "node": ">=18"
   },
   "bin": {
-    "weavatrix-refactor-mcp": "bin/weavatrix-refactor-mcp.mjs"
+    "weavatrix-refactor-js-mcp": "bin/weavatrix-refactor-js-mcp.mjs"
   },
   "exports": {
     "./extension": "./src/extension.mjs",

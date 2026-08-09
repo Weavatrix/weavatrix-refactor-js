@@ -10,7 +10,7 @@ import {dirname, join} from 'node:path'
 const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 
 test('the live server merges core and edit tools under the refactor profile', async () => {
-    const child = spawn(process.execPath, [join(packageRoot, 'bin', 'weavatrix-refactor-mcp.mjs'), packageRoot], {stdio: ['pipe', 'pipe', 'pipe']})
+    const child = spawn(process.execPath, [join(packageRoot, 'bin', 'weavatrix-refactor-js-mcp.mjs'), packageRoot], {stdio: ['pipe', 'pipe', 'pipe']})
     let buffer = ''
     const responses = new Map()
     const waiters = new Map()

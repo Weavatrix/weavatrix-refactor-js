@@ -1,4 +1,4 @@
-﻿// Coordinated multi-symbol rename as ONE atomic weavatrix.edit-plan.v1. Every individual
+// Coordinated multi-symbol rename as ONE atomic weavatrix.edit-plan.v1. Every individual
 // rename is computed by the language server against the SAME repository snapshot, then the
 // sub-plans are merged with cross-rename conflict detection. Simultaneous-snapshot
 // semantics make chains and swaps well-defined (A->B, B->A both resolve against the
@@ -210,7 +210,7 @@ export async function buildRelatedRenamePlan({
             uncertainReferences,
             notModified,
             warnings: [...warnings],
-            followUp: 'apply with weavatrix-refactor apply_edit_plan (preview -> confirm) or your editor, then run verified_change phase=verify',
+            followUp: 'apply with weavatrix-refactor-js apply_edit_plan (preview -> confirm) or your editor, then run verified_change phase=verify',
         },
     }
 }

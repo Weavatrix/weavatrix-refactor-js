@@ -1,6 +1,6 @@
-﻿// Symbol-anchored edit-plan producers: replace_symbol_body, insert_before_symbol,
+// Symbol-anchored edit-plan producers: replace_symbol_body, insert_before_symbol,
 // insert_after_symbol. Pure reads (ADR 0002): each emits a weavatrix.edit-plan.v1
-// envelope for the separate weavatrix-refactor applier — never touches the file itself.
+// envelope for the separate weavatrix-refactor-js applier — never touches the file itself.
 // Unlike rename these need no language server: the parser-owned source_range anchors the
 // edit, so they work for every indexed language. Provenance is EXTRACTED accordingly.
 // For JS/TS the resulting file is additionally parse-checked before a plan is issued.
@@ -66,7 +66,7 @@ const planEnvelope = ({operation, rawGraph, file, sha256, edits, warnings, synta
     notModified: [],
     warnings,
     ...(syntax ? {syntaxCheck: syntax.status} : {}),
-    followUp: 'apply with weavatrix-refactor apply_edit_plan (preview -> confirm) or your editor, then run verified_change phase=verify',
+    followUp: 'apply with weavatrix-refactor-js apply_edit_plan (preview -> confirm) or your editor, then run verified_change phase=verify',
 })
 
 // Builds the plan for one symbol-anchored edit. Returns a status object; 'PLANNED'

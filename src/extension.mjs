@@ -22,6 +22,6 @@ export const refactorExtension = () => defineWeavatrixExtension({
     // registers none of these — refactoring requires installing this package.
     tools: [...refactorTools(), ...planTools()],
     skills: [
-        {name: 'weavatrix-refactor', path: 'skill/SKILL.md'},
+        {name: 'weavatrix-refactor-js', path: 'skill/SKILL.md'},
     ],
 })
