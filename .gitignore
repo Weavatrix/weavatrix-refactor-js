@@ -3,3 +3,4 @@ node_modules/
 !.weavatrix/architecture.json
 *.tgz
 .DS_Store
+.serena/

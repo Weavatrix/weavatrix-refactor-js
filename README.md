@@ -6,8 +6,10 @@
 > package ships the native Rust MCP host built on
 > [weavatrix-rust](https://github.com/sergii-ziborov/weavatrix-rust) and the
 > `weavatrix-edit` / `weavatrix-refactor-plan` / `weavatrix-worktree` crates.
-> Pin `weavatrix-refactor@0.1.6` or install `weavatrix-refactor-js` to stay on
-> the JavaScript implementation.
+> This package continues that version line: `weavatrix-refactor@0.1.5` was the
+> last JavaScript release under the old name, and `weavatrix-refactor-js@0.1.6`
+> picks up from it. Install `weavatrix-refactor-js`, or pin
+> `weavatrix-refactor@0.1.5`, to stay on the JavaScript implementation.
 
 Evidence-backed, transactional refactoring for coding agents.
 

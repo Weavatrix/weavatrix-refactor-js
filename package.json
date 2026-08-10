@@ -1,6 +1,6 @@
 {
   "name": "weavatrix-refactor-js",
-  "version": "0.1.7",
+  "version": "0.1.6",
   "type": "module",
   "description": "Transactional refactoring MCP with 11 evidence-backed tools, hash-bound previews, and rollback.",
   "author": "Sergii Ziborov <sergii.ziborov@gmail.com>",
