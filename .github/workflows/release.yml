@@ -45,6 +45,11 @@ jobs:
           package-manager-cache: false
       - run: npm ci --ignore-scripts
       - name: Publish npm package with provenance
+        # setup-node writes an .npmrc that reads ${NODE_AUTH_TOKEN}. Without this the variable is
+        # empty, npm authenticates as anonymous, and PUT on a package it cannot see answers 404 -
+        # which reads like a missing package rather than a missing credential.
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         shell: bash
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
