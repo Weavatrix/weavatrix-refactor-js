@@ -38,15 +38,15 @@ jobs:
           SERVER_VERSION="$(node -p "require('./server.json').version")"
           SERVER_PACKAGE="$(node -p "require('./server.json').packages[0].identifier")"
           SERVER_PACKAGE_VERSION="$(node -p "require('./server.json').packages[0].version")"
-          [[ "$SERVER_NAME" == "io.github.weavatrix/weavatrix-refactor-js" ]]
+          [[ "$SERVER_NAME" == "io.github.Weavatrix/weavatrix-refactor-js" ]]
           [[ "$SERVER_VERSION" == "$VERSION" ]]
           [[ "$SERVER_PACKAGE" == "$PACKAGE_NAME" ]]
           [[ "$SERVER_PACKAGE_VERSION" == "$VERSION" ]]
           npm view "$PACKAGE_NAME@$VERSION" version --json |
             jq -e --arg version "$VERSION" '. == $version' >/dev/null
-          REGISTRY_RESPONSE="$(curl --fail --silent --show-error 'https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.weavatrix%2Fweavatrix-refactor-js')"
+          REGISTRY_RESPONSE="$(curl --fail --silent --show-error 'https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.Weavatrix%2Fweavatrix-refactor-js')"
           if jq --exit-status --arg version "$VERSION" \
-            '.servers[]?.server | select(.name == "io.github.weavatrix/weavatrix-refactor-js" and .version == $version)' \
+            '.servers[]?.server | select(.name == "io.github.Weavatrix/weavatrix-refactor-js" and .version == $version)' \
             <<<"$REGISTRY_RESPONSE" >/dev/null; then
             echo "MCP Registry already contains Weavatrix Refactor $VERSION; skipping publish"
           else
