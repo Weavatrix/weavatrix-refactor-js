@@ -8,10 +8,10 @@
   "homepage": "https://weavatrix.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sergii-ziborov/weavatrix-refactor-js.git"
+    "url": "git+https://github.com/Weavatrix/weavatrix-refactor-js.git"
   },
   "bugs": {
-    "url": "https://github.com/sergii-ziborov/weavatrix-refactor-js/issues"
+    "url": "https://github.com/Weavatrix/weavatrix-refactor-js/issues"
   },
   "mcpName": "io.github.sergii-ziborov/weavatrix-refactor-js",
   "engines": {

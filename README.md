@@ -1,10 +1,16 @@
 # Weavatrix Refactor JS
 
+[![CI](https://github.com/Weavatrix/weavatrix-refactor-js/actions/workflows/ci.yml/badge.svg)](https://github.com/Weavatrix/weavatrix-refactor-js/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/weavatrix-refactor-js.svg)](https://www.npmjs.com/package/weavatrix-refactor-js)
+[![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Part of the [Weavatrix ecosystem](https://weavatrix.com/ecosystem). This repository preserves the explicit JavaScript refactoring line.
+
 > This is the JavaScript refactoring engine of Weavatrix, continued as
 > `weavatrix-refactor-js`. The
 > [`weavatrix-refactor`](https://www.npmjs.com/package/weavatrix-refactor)
 > package ships the native Rust MCP host built on
-> [weavatrix-rust](https://github.com/sergii-ziborov/weavatrix-rust) and the
+> [weavatrix-rust](https://github.com/Weavatrix/weavatrix-rust) and the
 > `weavatrix-edit` / `weavatrix-refactor-plan` / `weavatrix-worktree` crates.
 > This package continues that version line: `weavatrix-refactor@0.1.5` was the
 > last JavaScript release under the old name, and `weavatrix-refactor-js@0.1.6`
@@ -269,7 +275,7 @@ Useful inherited surfaces include:
 - target architecture: `get_architecture_contract`, `verify_architecture`, `explain_architecture_violation`;
 - repository control: `open_repo`, `rebuild_graph`, `graph_diff`, `list_known_repos`.
 
-See the [weavatrix-js README](https://github.com/sergii-ziborov/weavatrix-js)
+See the [weavatrix-js README](https://github.com/Weavatrix/weavatrix-js)
 for the complete JavaScript host catalog.
 
 ## Run it
