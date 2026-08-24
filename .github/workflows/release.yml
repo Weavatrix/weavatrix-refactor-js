@@ -85,9 +85,9 @@ jobs:
         shell: bash
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          REGISTRY_RESPONSE="$(curl --fail --silent --show-error 'https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.sergii-ziborov%2Fweavatrix-refactor-js')"
+          REGISTRY_RESPONSE="$(curl --fail --silent --show-error 'https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.weavatrix%2Fweavatrix-refactor-js')"
           if jq --exit-status --arg version "$VERSION" \
-            '.servers[]?.server | select(.name == "io.github.sergii-ziborov/weavatrix-refactor-js" and .version == $version)' \
+            '.servers[]?.server | select(.name == "io.github.weavatrix/weavatrix-refactor-js" and .version == $version)' \
             <<<"$REGISTRY_RESPONSE" >/dev/null; then
             echo "MCP Registry already contains Weavatrix Refactor $VERSION; skipping publish"
           else

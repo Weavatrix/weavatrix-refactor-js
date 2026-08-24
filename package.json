@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/Weavatrix/weavatrix-refactor-js/issues"
   },
-  "mcpName": "io.github.sergii-ziborov/weavatrix-refactor-js",
+  "mcpName": "io.github.weavatrix/weavatrix-refactor-js",
   "engines": {
     "node": ">=18"
   },
